@@ -17,7 +17,7 @@ class FireDetectionApp(QWidget):
         self.model = YOLO('trained-models/best-luminous.pt')  # Update the path if necessary
 
         # Initialize camera
-        self.cap = cv2.VideoCapture(1)
+        self.cap = cv2.VideoCapture(0)
 
         if not self.cap.isOpened():
             raise Exception("Could not open video device")
@@ -49,6 +49,20 @@ class FireDetectionApp(QWidget):
         btn_layout.addWidget(self.btn_start)
         btn_layout.addWidget(self.btn_stop)
 
+        # Resize the buttons
+        self.btn_start.setFixedWidth(200)
+        self.btn_start.setFixedHeight(100)
+        self.btn_stop.setFixedWidth(200)
+        self.btn_stop.setFixedHeight(100)
+
+
+        # Font size of the buttons
+        font = self.btn_start.font()
+        font.setPointSize(20)
+        self.btn_start.setFont(font)
+        self.btn_stop.setFont(font)
+
+
         v_layout = QVBoxLayout()
         v_layout.addLayout(h_layout)
         v_layout.addLayout(btn_layout)
@@ -67,7 +81,7 @@ class FireDetectionApp(QWidget):
             return
 
         # Resize frame for consistency
-        frame = cv2.resize(frame, (640, 480))
+        frame = cv2.resize(frame, (980, 800))
 
         # Process frame with YOLO
         results = self.model.predict(source=frame, conf=0.25, save=False, show=False)
@@ -81,7 +95,7 @@ class FireDetectionApp(QWidget):
         self.label_unprocessed.setPixmap(unprocessed_qimg)
         self.label_processed.setPixmap(processed_qimg)
 
-    def convert_cv_qt(self, cv_img):
+    def convert_cv_qt(self, cv_img): # this function is needed as OpenCV and PyQt have different image formats
         """Convert from an OpenCV image to QPixmap."""
         rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
         h, w, ch = rgb_image.shape
@@ -90,7 +104,7 @@ class FireDetectionApp(QWidget):
             rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888
         )
         pixmap = QPixmap.fromImage(qt_image).scaled(
-            320, 240, Qt.KeepAspectRatio
+            980, 800, Qt.KeepAspectRatio
         )  # Adjust size as needed
         return pixmap
 
