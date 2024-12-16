@@ -4,7 +4,7 @@ from ultralytics import YOLO
 
 def main():
     # Load the YOLO model
-    model = YOLO('trained-models/best-luminous.pt')  # Update the path if necessary
+    model = YOLO('trained-models/check-best.pt')  # Update the path if necessary
 
     # Initialize video capture (0 for default camera)
     cap = cv2.VideoCapture(0)

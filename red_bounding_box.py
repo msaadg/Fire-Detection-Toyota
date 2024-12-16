@@ -4,14 +4,19 @@ from ultralytics import YOLO
 
 def main():
     # Load the YOLO model
-    model = YOLO('trained-models/best-luminous.pt')  # Update the path if necessary
+    model = YOLO('trained-models/check-best.pt')  # Update the path if necessary
 
-    # Initialize video capture (0 for default camera)
-    cap = cv2.VideoCapture(0)
+    # # Initialize video capture (0 for default camera)
+    # cap = cv2.VideoCapture(0)
 
-    if not cap.isOpened():
-        print("Error: Cannot access the camera.")
-        return
+    # if not cap.isOpened():
+    #     print("Error: Cannot access the camera.")
+    #     return
+
+    # video coming from .sec file
+    cap = cv2.VideoCapture('sec_videos/sec1.sec')
+    
+
 
     while True:
         # Capture frame-by-frame
@@ -24,7 +29,7 @@ def main():
         frame = cv2.resize(frame, (980, 800))
 
         # Process the frame with YOLO
-        results = model.predict(source=frame, conf=0.25, save=False, show=False)
+        results = model.predict(source=frame, conf=0.05, save=False, show=False)
 
                  # Extract bounding boxes from YOLO results
         boxes = results[0].boxes.xyxy.cpu().numpy()  # Convert boxes to numpy array for faster processing
@@ -35,12 +40,15 @@ def main():
           # Convert the frame to a copy so we can modify it without affecting the original
         frame_with_boxes = frame.copy()
 
+        # print all the classes of the model
+        
+
                 #   Vectorized approach: draw bounding boxes in bulk
         for box, class_id in zip(boxes.astype(int), classes.astype(int)):  # Convert to integer coordinates
-         # Model class names: {0: 'fire', 1: 'smoke'}
+         # Model class names: {0: '1'}  # fire
             color = (255,0, 0)  # default: blue 
-            if model.names[class_id] == 'fire':
-                color = (0, 0, 255) # Gray for smoke
+            if model.names[class_id] == '1':
+                color = (0, 0, 255) # red for fire
             # else:
             #     color = (0, 0, 255)  # Red for other detections (e.g., fire)
 
